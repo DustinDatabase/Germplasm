@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/jquery.typeahead.min.css">
+<script src = "js/jquery.typeahead.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css"> 
+
+<style>
+.infoCheckbox {
+  display: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+body{
+	background-color: GhostWhite;
+
+}
+
+
+#left { display: inline-block; }
+#right {  display: inline-block;}
+
+.btn span.glyphicon {    			
+	opacity: 0;				
+}
+.btn.active span.glyphicon {				
+	opacity: 1;				
+}
+.caret{
+
+-webkit-appearance: none !important; 
+-moz-appearance: none !important; 
+appearance: none !important;
+
+}
+
+
+
+.typeahead__list {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.message{
+    display:none;
+    color:#000;
+    background:#999;
+    position:absolute;
+    top:10px;
+}
+
+li{
+    position:relative;
+}
+</style>
+
+<script>
+        $(document).ready(function() {
+		$.typeahead({
+                minLength: 0,
+                searchOnFocus: true,
+                hint: true,
+                maxItem: 20,
+                input: '.js-typeahead-option0',
+                //order: "desc",
+                source: {
+                data:["station_inventory","sample","station_marker"]
+                },
+                callback: {
+                	onInit: function (node) {
+                		console.log('Typeahead Initiated on ' + node.selector);
+                	},
+			onClickAfter: function (node, a, item, event){
+			$("#combobox1").typeahead("destroy");
+			$("#combobox3").typeahead("destroy");
+
+
+			if ($("#combobox").val() == 'default'){
+                		$("#options").load('empty.html');
+                	}
+                	if ($("#combobox").val() == 'station_inventory'){
+                		$("#options").load('inven_options.html');
+                	}
+                	if ($("#combobox").val() == 'sample'){
+                		$("#options").load('sample_options.html');
+                	}
+			$.post("search1.php", { 
+                		table: $("#combobox").val()
+                	},
+                	function(response,status){ // Required Callback Function
+                		options = jQuery.parseJSON(response);
+				
+                		$("#combobox1").typeahead({
+                			minLength: 0,
+                			searchOnFocus: true,
+                			hint: true,
+                			maxItem: 20,
+                			//order: "desc",
+                			source: {
+                				data:options
+                			},
+                			callback: {
+                				onInit: function (node) {
+                					console.log('Typeahead Initiated on ' + node.selector);
+                				},
+						onClickAfter: function (node, a, item, event){
+			$("#combobox2").typeahead("destroy");
+			$.post("search2.php", { 
+                		table: $("#combobox").val(),
+				column:$("#combobox1").val()
+                	},
+                		function(response,status){ // Required Callback Function
+                		options = jQuery.parseJSON(response);
+                						$.typeahead({
+                							minLength: 0,
+                							searchOnFocus: true,
+                							hint: true,
+                							maxItem: 20,
+                							input: '#combobox2',
+                							//order: "desc",
+                							source: {
+                								data:options
+                							},
+                							callback: {
+                								onInit: function (node) {
+                									console.log('Typeahead Initiated on ' + node.selector);
+                								}
+                							}
+                						});
+
+			});
+			}
+			}
+			});
+
+			$("#combobox3").typeahead({
+                                        minLength: 0,
+                                        searchOnFocus: true,
+                                        hint: true,
+                                        maxItem: 20,
+                                        //order: "desc",
+                                        source: {
+                                                data:options
+                                        },
+                                        callback: {
+                                                onInit: function (node) {
+                                                        console.log('Typeahead Initiated on ' + node.selector);
+                                                },
+                                                onClickAfter: function (node, a, item, event){
+                        $("#combobox4").typeahead("destroy");
+			$.post("search2.php", { 
+                                table: $("#combobox").val(),
+                                column:$("#combobox3").val()
+                        },
+                                function(response,status){ // Required Callback Function
+                                options = jQuery.parseJSON(response);
+                                                                $.typeahead({
+                                                                        minLength: 0,
+                                                                        searchOnFocus: true,
+                                                                        hint: true,
+                                                                        maxItem: 20,
+                                                                        input: '#combobox4',
+                                                                        //order: "desc",
+                                                                        source: {
+                                                                                data:options
+                                                                        },
+                                                                        callback: {
+                                                                                onInit: function (node) {
+                                                                                        console.log('Typeahead Initiated on ' + node.selector);
+                                                                                }
+                                                                        }
+                                                                });
+
+                        });
+                        }
+                        }
+                        });
+		});
+
+		}
+		}
+
+
+
+
+
+
+                });	
+
+
+
+
+	$( "#submit" ).click(function() {
+                if ($.fn.DataTable.isDataTable("#example")) {
+                        $('#example').DataTable().clear().destroy();
+                        
+
+                        $("#example").innerHTML = "<thead></thead>";
+                        $("#example").empty();
+                }
+
+	var subset1 = [];
+	var subset2 = [];
+	var subset3 = [];
+	var subset4 = [];
+	var final_set = [];
+	var set = [];		
+	var column_names = [];
+
+
+
+	if ($("#combobox").val() == 'station_inventory'){
+	set = ["MITC_NUMBER","CLONE_OF","GENUS","SPECIES","ROOM","ROW","POINT","TREE_NUMBER","NEXT_LOCATION","MOTHER","FATHER","CROSS","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","COUNTRY_OF_ORIGIN","INSTITUTE","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER","IMPORT_PERMIT","ALIAS_OR_OTHER_ID","RUQ_NUMBER","GRIN_GLOBAL_NUMBER","NFC_TAG_ADDED","SI CODE","203 Allele 1","203 Allele 2","208 Allele 1","208 Allele 2","COMMENTS"];
+			
+		if(!document.getElementById('subset1').checked && !document.getElementById('subset2').checked && !document.getElementById('subset3').checked && !document.getElementById('subset4').checked){
+		document.getElementById('subset1').checked = true;
+		}
+
+		if(document.getElementById('subset1').checked){
+			subset1 =["MITC_NUMBER","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","MOTHER","FATHER","STATUS","OFFTYPE","INSTITUTE","COUNTRY_OF_ORIGIN","RUQ_NUMBER"];
+			
+		}
+		if(document.getElementById('subset2').checked){
+                      	subset2 =["MITC_NUMBER","CLONE_OF","OFFTYPE","203 Allele 1","203 Allele 2","208 Allele 1","208 Allele 2","SI_CODE"];
+                }
+		if(document.getElementById('subset3').checked){
+                        subset3 =["MITC_NUMBER","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ_NUMBER","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                        
+                }
+		if(document.getElementById('subset4').checked){
+                        subset4 =["MITC_NUMBER","CLONE_OF","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","SI_CODE"];
+                }
+		for(var i = 0;i<set.length;i++){
+                        if((jQuery.inArray(set[i], subset1) != -1)||(jQuery.inArray(set[i], subset2) != -1) || (jQuery.inArray(set[i], subset3) != -1) ||(jQuery.inArray(set[i], subset4) != -1)){      
+                                final_set.push({title:set[i]});
+                                column_names.push(set[i]); 
+                        }
+                }
+
+
+	}
+
+	if ($("#combobox").val() == 'sample'){
+
+
+	set = ["TC_number","Unique Identifier","Species","Clone_of","Project","Mother","Father","Country","Institution","Farm","Field/Greenhouse","Block","Rep/Parcel","Row","Column","Tree/Plant"];
+
+	subset1 = ["TC_number","Unique Identifier","Species","Clone_of","Project","Mother","Father","Country","Institution","Farm","Field/Greenhouse","Block","Rep/Parcel","Row","Column","Tree/Plant"];
+	
+	for(var i = 0;i<set.length;i++){
+                                final_set.push({title:set[i]});
+                                column_names.push(set[i]); 
+        }
+
+
+	}
+		var table1 = $('#example').dataTable( {
+			"aProcessing": true,
+			 destroy: true,
+			"iDisplayLength": 25,
+			 "aServerSide": true,
+//			"bPaginate": false, 
+//			"bFilter": false, 
+			"sScrollY": "100%", 
+			"sScrollX": "100%", 
+			"sScrollXInner": "100%", 
+			//"bScrollCollapse": true,
+			"bAutoWidth": true, 
+			fixedHeader: {
+            		header: true,
+            		footer: true,
+        		},
+		"columnDefs": [
+        	{"className": "dt-center", "targets": "_all"}
+      		],
+		columns: final_set,
+
+		"ajax":{
+	   		"url": "server-response3.php",
+	   		"type": "post",
+	   		"data": {
+				column_names : column_names,
+				table:$("#combobox").val(),
+				column: $("#combobox1").val(),
+				item : $("#combobox2").val(),
+				logi: $("#logi").val(),
+				column2: $("#combobox3").val(),
+				item2 : $("#combobox4").val()
+				 },
+		}
+		});
+		table1.fixedHeader.adjust();
+
+		});
+});
+</script>
+</head>
+<body>
+<p id = "info">
+
+</p>
+<div style="outline:10px">
+
+
+<div class="typeahead__container" style= "width:200px; margin-left: 66px; float:left;" > 
+<input id = "combobox"   style= "width:100%; " class = "js-typeahead-option0 js-typeahead form-control" placeholder="Table" autocomplete="off" type="search"    >
+</div>
+
+
+
+
+<div class="typeahead__container " style= "width:200px;clear:left; margin-left: 66px; margin-top:10px; float:left;">
+<input id = "combobox1" class = "js-typeahead-option1 js-typeahead form-control"  style= "width:100%;" placeholder="Column" autocomplete="off" type="search">
+</div>
+<div class="typeahead__container  " style= "width:200px; float:left;  display: inline-block;margin-top:10px;margin-left:10px; " >
+<input id = "combobox2" class = "js-typeahead js-typeahead-option2 form-control"style= "width:100%;"  placeholder="metric" autocomplete="off" type="search" >
+</div>
+
+
+
+</br>
+<div>
+<div style = "clear:left;float:left;width:61px; margin-top:10px;  ">
+<select class="selectpicker" id = "logi"  >
+<option value="na">NA</option>
+<option value="and">and</option>
+<option value = "or">or </option>
+<option value = "not">not </option>
+
+</select>
+
+</div>
+<div class="typeahead__container " style= "width:200px; margin-left: 5px;  margin-top:10px; display:inline; float:left;">
+<input id = "combobox3" placeholder="Column" class = "form-control js-typeahead-option1" style= "width:100%;" autocomplete="off" type="search">
+</div>
+
+<div class="typeahead__container  " style= "width:200px; float:left;margin-top:10px; margin-left:10px; ">
+<input id = "combobox4" class = "js-typeahead js-typeahead-option2 form-control " style= "width:100%;" placeholder="metric" autocomplete="off" type="search">
+</div>
+
+
+
+
+
+</br>
+<div id = "options"  style= "margin-top:10px; ">
+</div>
+</div>
+
+
+
+<div style= " clear: left; margin-left: 66px; margin-top: 20px; float:left; margin-bottom: 20px;">
+<button type="submit" form = "form1" class = "btn btn-primary" id = "submit" value="Submit">Submit</button>&nbsp;&nbsp;
+<form method="get" action="../files/current_data.csv" style = "display:inline-block;">
+   <button type="submit"  class = "btn btn-info">Download</button>
+</form>
+</div>
+</div>
+<table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+<thead>
+</thead>
+<tfoot>
+</tfoot>
+<tbody>
+</tbody>
+</table>
+
+</body>
+</html>

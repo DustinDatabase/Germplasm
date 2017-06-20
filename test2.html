@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script>
+        $(document).ready(function() {
+		$("#combobox").select2();
+		$("#combobox1").select2();
+		$("#combobox2").select2();
+		$( "#combobox" ).bind( "select", function( event ) {
+		$("#combobox1").load("search1.php?table="+$("#combobox").val() );
+		});
+$("#combobox1").change(function () {
+		//document.getElementById("p").innerHTML = "hello";
+                $("#combobox2").load("search2.php?column="+$("#combobox1").val()+"&table="+$("#combobox").val() );
+
+            });
+
+
+		$( "#submit" ).click(function() {
+		if ($.fn.DataTable.isDataTable("#example")) {
+                        $('#example').DataTable().clear().destroy();
+                }
+
+		var column_names = [];
+            	$.each($("input[name='cb']:checked"), function(){            
+                	//columns.push($(this).val());
+            	});
+
+var subset1 = [];
+var subset2 = [];
+var subset3 = [];
+var subset4 = [];
+var final_set = [];
+var set = ["MITC","CLONE_OF","GENUS","SPECIES","ROOM","ROW","POINT","TREE_NUMBER","NEXT_LOCATION","MOTHER","FATHER","CROSS","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","COUNTRY_OF_ORIGIN","INSTITUTE","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER","IMPORT_PERMIT","ALIAS_OR_OTHER_ID","RUQ_#","GRIN_GLOBAL_NUMBER","NFC_TAG_ADDED","SI_CODE","Column_203_Allele_1","Column_203 Allele_2","Column_208_Allele_1","Column_208_Allele_2","COMMENTS"];
+		if(document.getElementById('subset1').checked){
+			var subset1 =["MITC","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","MOTHER","FATHER","STATUS","OFFTYPE","INSTITUTE","COUNTRY_OF_ORIGIN","RUQ"];
+			
+		}
+		if(document.getElementById('subset2').checked){
+                      var subset2 =["MITC","CLONE_OF","OFFTYPE","Column_203_Allele_1","Column_203_Allele_2","Column_208_Allele_1","Column_208_Allele_2","SI_CODE"];
+                }
+		if(document.getElementById('subset3').checked){
+                        var subset3 =["MITC","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                        
+                }
+		if(document.getElementById('subset4').checked){
+                        //var subset4 =["MITC","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                }
+
+		for(var i = 0;i<set.length;i++){
+				
+			if((jQuery.inArray(set[i], subset1) != -1)||(jQuery.inArray(set[i], subset2) != -1) || (jQuery.inArray(set[i], subset3) != -1) ||(jQuery.inArray(set[i], subset4) != -1)){	
+				final_set.push({title:set[i]});
+				column_names.push(set[i]); 
+			}
+		}
+
+		$('#example').dataTable( {
+			
+			"aProcessing": true,
+			 "aServerSide": true,
+		"columnDefs": [
+        {"className": "dt-center", "targets": "_all"}
+      		],
+		 fixedHeader: true,
+		columns: final_set,
+		
+
+		"ajax":{
+	   		"url": "server-response3.php",
+	   		"type": "post",
+	   		"data": {
+				column_names : column_names,
+				table:$("#table").val(),
+				column: $("#text1").val(),
+				item : $("#text2").val(),	
+				 },
+		}
+		});
+		});
+
+
+
+        });
+
+function myFunction() {
+    location.reload();
+}
+
+    </script>
+
+
+</head>
+
+<body>
+
+
+<form autocomplete="off">
+TABLE:
+<select id = "combobox" >
+<option selected="selected">Please select the table </option>
+<option value = "station_inventory">station_inventory </option>
+<option value = "sample">sample</option>
+<option value = "station_marker">station_marker</option>
+</select>
+</br>
+Search in Column
+<select id = "combobox1">
+	<option value = "default"> Please select table </option> 
+</select>      
+For
+<select id = "combobox2">
+        <option > Please select column </option>
+</select>
+</br>
+<input type="checkbox" id ="subset1" name="cb" value="location">Location<br>
+<input type="checkbox" id ="subset2" name="cb" value="SI_Code">SI Code<br>
+<input type="checkbox" id ="subset3" name="cb" value="Graft_Info">Graft Info<br>
+<input type="checkbox" id ="subset4" name="cb" value="Offtype">Offtype<br>
+
+<button type="submit"  id = "submit" value="Submit">Submit</button>
+<button onclick="myFunction()">Reload page</button>
+
+</form>
+<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+            </tr>
+        </thead>
+
+</table>
+
+
+</body>
+
+
+</html>

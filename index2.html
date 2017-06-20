@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+<script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css"> 
+
+
+<style>
+.infoCheckbox {
+  display: none;
+}
+#left { display: inline-block; }
+#right {  display: inline-block;}
+.div_class {
+    clear:both;
+
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.message{
+    display:none;
+    color:#000;
+    background:#999;
+    position:absolute;
+    top:10px;
+}
+
+li{
+    position:relative;
+}
+</style>
+
+<script>
+        $(document).ready(function() {
+
+		$('#combobox option[value="default"]').attr('selected', true);
+		$("#combobox").select2();
+		$("#combobox1").select2();
+		$("#combobox2").select2();
+		$("#combobox3").select2();
+                $("#combobox4").select2();
+		$( "#combobox" ).change( function() {
+		if ($("#combobox").val() == 'default'){
+                $("#options").load('empty.html');
+                }
+		if ($("#combobox").val() == 'station_inventory'){
+		$("#options").load('inven_options.html');
+		}
+		if ($("#combobox").val() == 'sample'){
+                $("#options").load('sample_options.html');
+                }
+
+		$("#combobox1").load("search1.php?table="+$("#combobox").val() );
+		$("#combobox3").load("search1.php?table="+$("#combobox").val() );
+		});
+		$("#combobox1").change(function () {
+		//document.getElementById("p").innerHTML = "hello";
+                $("#combobox2").load("search2.php?column="+$("#combobox1").val()+"&table="+$("#combobox").val() );
+            });
+
+                $("#combobox3").change(function () {
+                $("#combobox4").load("search2.php?column="+$("#combobox3").val()+"&table="+$("#combobox").val() );
+            });
+
+		$( "#submit" ).click(function() {
+
+		if ($.fn.DataTable.isDataTable("#example")) {
+			$('#example').DataTable().clear().destroy();
+			
+
+			$("#example").innerHTML = "<thead></thead>";
+			$("#example").empty();
+                }
+		var column_names = [];
+            	$.each($("input[name='cb']:checked"), function(){            
+                	//columns.push($(this).val());
+            	});
+
+
+
+if ($("#combobox").val() == 'station_inventory'){
+var subset1 = [];
+var subset2 = [];
+var subset3 = [];
+var subset4 = [];
+var final_set = [];
+
+var set = ["MITC_NUMBER","CLONE_OF","GENUS","SPECIES","ROOM","ROW","POINT","TREE_NUMBER","NEXT_LOCATION","MOTHER","FATHER","CROSS","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","COUNTRY_OF_ORIGIN","INSTITUTE","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER","IMPORT_PERMIT","ALIAS_OR_OTHER_ID","RUQ_NUMBER","GRIN_GLOBAL_NUMBER","NFC_TAG_ADDED","SI_CODE","203_Allele_1","203_Allele_2","208_Allele_1","208_Allele_2","COMMENTS"];
+		
+		if(!document.getElementById('subset1').checked && !document.getElementById('subset2').checked && !document.getElementById('subset3').checked && !document.getElementById('subset4').checked){
+		document.getElementById('subset1').checked = true;
+		
+		}
+
+		if(document.getElementById('subset1').checked){
+			var subset1 =["MITC_NUMBER","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","MOTHER","FATHER","STATUS","OFFTYPE","INSTITUTE","COUNTRY_OF_ORIGIN","RUQ_NUMBER"];
+			
+		}
+		if(document.getElementById('subset2').checked){
+                      var subset2 =["MITC_NUMBER","CLONE_OF","OFFTYPE","203_Allele_1","203_Allele_2","208_Allele_1","208_Allele_2","SI_CODE"];
+                }
+		if(document.getElementById('subset3').checked){
+                        var subset3 =["MITC_NUMBER","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ_NUMBER","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                        
+                }
+		if(document.getElementById('subset4').checked){
+                        var subset4 =["MITC_NUMBER","CLONE_OF","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","SI_CODE"];
+                }
+
+}
+if ($("#combobox").val() == 'sample'){
+var subset1 = [];
+var subset2 = [];
+var subset3 = [];
+var subset4 = [];
+var final_set = [];
+
+var set = ["TC_number","Unique Identifier","Family","Genus","Species","SubSpecies","Common name","Clone_of","Hybrid types","Population","Rep number","Old ID number","Plant Part","Mother","Parent 1 type","Father","Parent 2 type","Project","Country","Institution","Farm","Tree","Field","Block","Parcel","Column","Row","Point","Field Position","Date Collected/Harvested","Collector", "Tree Status","Sample Info/Comments","Local Label","Sample ID","Nucleic Acid Conc (ng/uL)", "Water Volume","Genotype Data","X__1","Parent 1 name","Parent 2 name","Comments"];
+
+
+
+                
+                if(!document.getElementById('subset1').checked && !document.getElementById('subset2').checked && !document.getElementById('subset3').checked && !document.getElementById('subset4').checked){
+                document.getElementById('subset1').checked = true;
+                
+                }
+
+                if(document.getElementById('subset1').checked){
+			var subset1 = ["TC_number","Unique Identifier","Family","Genus","Species","SubSpecies","Common name","Clone_of","Hybrid types","Population","Rep number","Old ID number","Plant Part","Mother","Parent 1 type","Father","Parent 2 type","Project","Country","Institution","Farm","Tree","Field","Block","Parcel","Column","Row","Point","Field Position","Date Collected/Harvested","Collector", "Tree Status","Sample Info/Comments","Local Label","Sample ID","Nucleic Acid Conc (ng/uL)", "Water Volume","Genotype Data","X__1","Parent 1 name","Parent 2 name","Comments"];
+ 
+                }
+                if(document.getElementById('subset2').checked){
+                      var subset2 =["MITC_NUMBER","CLONE_OF","OFFTYPE","203_Allele_1","203_Allele_2","208_Allele_1","208_Allele_2","SI_CODE"];
+                }
+                if(document.getElementById('subset3').checked){
+                        var subset3 =["MITC_NUMBER","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ_NUMBER","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                        
+                }
+                if(document.getElementById('subset4').checked){
+                        var subset4 =["MITC_NUMBER","CLONE_OF","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","SI_CODE"];
+                }
+
+}
+
+
+
+		for(var i = 0;i<set.length;i++){
+			if((jQuery.inArray(set[i], subset1) != -1)||(jQuery.inArray(set[i], subset2) != -1) || (jQuery.inArray(set[i], subset3) != -1) ||(jQuery.inArray(set[i], subset4) != -1)){	
+				final_set.push({title:set[i]});
+				column_names.push(set[i]); 
+			}
+		}
+		var table1 = $('#example').dataTable( {
+			"aProcessing": true,
+			 destroy: true,
+			 "aServerSide": true,
+//		"bPaginate": false, 
+//"bFilter": false, 
+"sScrollY": "600", 
+"sScrollX": "100%", 
+"sScrollXInner": "100%", 
+//"bScrollCollapse": true,
+		"bAutoWidth": false, 
+		fixedHeader: {
+            header: true,
+            footer: true,
+        },
+		"columnDefs": [
+        {"className": "dt-center", "targets": "_all"}
+      		],
+		columns: final_set,
+
+		"ajax":{
+	   		"url": "server-response3.php",
+	   		"type": "post",
+	   		"data": {
+				column_names : column_names,
+				table:$("#combobox").val(),
+				column: $("#combobox1").val(),
+				item : $("#combobox2").val(),
+				logi: $("#logi").val(),
+				column2: $("#combobox3").val(),
+				item2 : $("#combobox4").val(),
+				status :$('input[name="status"]:checked').val(),
+				 },
+		}
+		});
+		table1.fixedHeader.adjust();
+	});
+
+
+});
+
+    </script>
+
+
+</head>
+
+<body>
+
+<p id = "info">
+
+</p>
+
+TABLE:
+<select id = "combobox"  data-tooltip = "help">
+<option value = "default" >Please select the table </option>
+<option value = "station_inventory">station_inventory </option>
+<option value = "sample">sample</option>
+<option value = "station_marker">station_marker</option>
+</select>
+
+</br>
+</br>
+Search in Column&nbsp;&nbsp;&nbsp;&nbsp;
+<select id = "combobox1">
+	<option value = "default"> Please select table </option> 
+</select>      
+For
+<select id = "combobox2">
+        <option > Please select column </option>
+</select>
+</br>
+<select id = "logi" >
+<option value="na">NA</option>
+<option value="and">and</option>
+<option value = "or">or </option>
+</select>
+ In Column 
+<select id = "combobox3">
+        <option value = "default"> Please select table </option>
+</select>
+For
+<select id = "combobox4">
+        <option > Please select column </option>
+</select>
+</br>
+</br>
+<div id = "options">
+<!--
+<div id = "inven_options"  style="clear: left" disable = "true" >
+ <x data-tooltip ="MITC_NUMBER, ROOM, ROW, POINT, NEXT_LOCATION, GENUS, SPECIES, CLONE_OF, MOTHER, FATHER, STATUS, OFFTYPE, INSTITUTE, COUNTRY_OF_ORIGIN, RUQ_NUMBER"> 
+Subset <input type="checkbox" id ="subset1" name="cb" value="location" checked>Location &nbsp;
+</x>
+ <x data-tooltip= "MITC_NUMBER, CLONE_OF, OFFTYPE, 203_Allele_1, 203_Allele_2, 208_Allele_1, 208_Allele_2, SI_CODE">
+
+<input type="checkbox" id ="subset2" name="cb" value="SI_Code" >SI Code &nbsp;
+</x>
+ <x data-tooltip = "MITC_NUMBER, ROOM, ROW, POINT, NEXT_LOCATION, GENUS, SPECIES, CLONE_OF, CROSS,STATUS, INSTITUTE, COUNTRY_OF_ORIGIN, ROOTSTOCK, GRAFTING_METHOD, DATE_GRAFTED, GRAFTER, IMPORT_PERMIT, RUQ_NUMBER, ALIAS_OR_OTHER_ID, COMMENTS, TREE_NUMBER">
+<input type="checkbox" id ="subset3" name="cb" value="Graft_Info" >Graft Info &nbsp;
+<x/>
+ <x data-tooltip = "MITC_NUMBER, CLONE_OF, STATUS,OFFTYPE, GENOTYPED_SAMPLE_TC, OFFTYPE_REFERENCE_TC, SI_CODE">
+<input type="checkbox" id ="subset4" name="cb" value="Offtype" >Offtype &nbsp;
+<br>
+</x>
+ <form id = "status" action="POST">
+Status:
+  <input type="radio" name="gender" value="all" checked> ALL &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+  <input type="radio" name="gender" value="dead"> DEAD &nbsp; &nbsp; &nbsp;
+  <input type="radio" name="gender" value="alive"> ALIVE &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="radio" name="gender" value="grafted">  GRAFTED &nbsp;
+</form>
+</div>
+<div id = "sample_options"  style="clear: left"  disable = "true">
+ <x data-tooltip ="MITC_NUMBER, ROOM, ROW, POINT, NEXT_LOCATION, GENUS, SPECIES, CLONE_OF, MOTHER, FATHER, STATUS, OFFTYPE, INSTITUTE, COUNTRY_OF_ORIGIN, RUQ_NUMBER">
+Subset <input type="checkbox" id ="subset1" name="cb" value="location" checked >TBD1 &nbsp;
+</x>
+ <x data-tooltip= "MITC_NUMBER, CLONE_OF, OFFTYPE, 203_Allele_1, 203_Allele_2, 208_Allele_1, 208_Allele_2, SI_CODE">
+
+<input type="checkbox" id ="subset2" name="cb" value="SI_Code" >TBD2 &nbsp;
+</x>
+ <x data-tooltip = "MITC_NUMBER, ROOM, ROW, POINT, NEXT_LOCATION, GENUS, SPECIES, CLONE_OF, CROSS,STATUS, INSTITUTE, COUNTRY_OF_ORIGIN, ROOTSTOCK, GRAFTING_METHOD, DATE_GRAFTED, GRAFTER, IMPORT_PERMIT, RUQ_NUMBER, ALIAS_OR_OTHER_ID, COMMENTS, TREE_NUMBER">
+<input type="checkbox" id ="subset3" name="cb" value="Graft_Info" >TBD3 &nbsp;
+<x/>
+ <x data-tooltip = "MITC_NUMBER, CLONE_OF, STATUS,OFFTYPE, GENOTYPED_SAMPLE_TC, OFFTYPE_REFERENCE_TC, SI_CODE">
+<input type="checkbox" id ="subset4" name="cb" value="Offtype" >TBD4 &nbsp;
+<br>
+</x>
+ <form id = "status" action="POST">
+Status:
+  <input type="radio" name="gender" value="all" checked> TBD &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+  <input type="radio" name="gender" value="dead"> TBD &nbsp; &nbsp; &nbsp;
+  <input type="radio" name="gender" value="alive"> TBD &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="radio" name="gender" value="grafted">  TBD &nbsp;
+</form>
+</div>
+-->
+</div>
+<button type="submit" id = "submit" value="Submit" >Submit</button>&nbsp;&nbsp;
+
+<button type="submit"  onclick="window.location.href='../files/current_data.csv'">Dowload</button>
+<table id="example" class="display" cellspacing="0" width="100%" style = "margin-top: 20px">
+</div>
+<thead>
+</thead>
+<tfoot>
+</tfoot>
+<tbody>
+</tbody>
+</table>
+
+
+</body>
+</html>

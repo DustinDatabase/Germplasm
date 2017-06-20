@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta charset="utf-8">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="//netsh.pp.ua/upwork-demo/1/js/typeahead.js"></script>
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+<link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<script type="text/javascript" language="javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="../js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-2.2.4/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.13/af-2.1.3/b-1.2.4/b-colvis-1.2.4/b-flash-1.2.4/b-html5-1.2.4/b-print-1.2.4/cr-1.3.2/fc-3.2.2/fh-3.1.2/kt-2.2.0/r-2.1.1/rr-1.2.0/sc-1.4.2/se-1.2.0/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-2.2.4/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.13/af-2.1.3/b-1.2.4/b-colvis-1.2.4/b-flash-1.2.4/b-html5-1.2.4/b-print-1.2.4/cr-1.3.2/fc-3.2.2/fh-3.1.2/kt-2.2.0/r-2.1.1/rr-1.2.0/sc-1.4.2/se-1.2.0/datatables.min.js"></script>
+
+
+<style>
+        h1 {
+            font-size: 20px;
+            color: #111;
+        }
+
+        .content {
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .tt-hint,
+        .city {
+            border: 2px solid #CCCCCC;
+            border-radius: 8px 8px 8px 8px;
+            font-size: 24px;
+            height: 45px;
+            line-height: 30px;
+            outline: medium none;
+            padding: 8px 12px;
+            width: 400px;
+        }
+
+        .tt-dropdown-menu {
+            width: 400px;
+            margin-top: 5px;
+            padding: 8px 12px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 8px 8px 8px 8px;
+            font-size: 18px;
+            color: #111;
+            background-color: #F1F1F1;
+        }
+    </style>
+<script>
+        $(document).ready(function() {
+		
+	    $("#table").change(function(){
+		$("#typeList").load("search1.php?table="+$("#table").val() );
+            });
+		$("#text1").bind('input', function () {
+		//document.getElementById("p").innerHTML = "hello";
+                $("#content").load("search2.php?column="+$("#text1").val()+"&table="+$("#table").val() );
+
+            });
+
+
+
+		$( "#submit" ).click(function() {
+		if ($.fn.DataTable.isDataTable("#example")) {
+                        $('#example').DataTable().clear().destroy();
+                }
+
+		var column_names = [];
+            	$.each($("input[name='cb']:checked"), function(){            
+                	//columns.push($(this).val());
+            	});
+
+
+var subset1 = [];
+var subset2 = [];
+var subset3 = [];
+var subset4 = [];
+var final_set = [];
+var set = ["MITC","CLONE_OF","GENUS","SPECIES","ROOM","ROW","POINT","TREE_NUMBER","NEXT_LOCATION","MOTHER","FATHER","CROSS","STATUS","OFFTYPE","GENOTYPED_SAMPLE_TC","OFFTYPE_REFERENCE_TC","COUNTRY_OF_ORIGIN","INSTITUTE","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER","IMPORT_PERMIT","ALIAS_OR_OTHER_ID","RUQ_#","GRIN_GLOBAL_NUMBER","NFC_TAG_ADDED","SI_CODE","Column_203_Allele_1","Column_203 Allele_2","Column_208_Allele_1","Column_208_Allele_2","COMMENTS"];
+		if(document.getElementById('subset1').checked){
+			var subset1 =["MITC","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","MOTHER","FATHER","STATUS","OFFTYPE","INSTITUTE","COUNTRY_OF_ORIGIN","RUQ"];
+			
+		}
+		if(document.getElementById('subset2').checked){
+                      var subset2 =["MITC","CLONE_OF","OFFTYPE","Column_203_Allele_1","Column_203_Allele_2","Column_208_Allele_1","Column_208_Allele_2","SI_CODE"];
+                }
+		if(document.getElementById('subset3').checked){
+                        var subset3 =["MITC","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                        
+                }
+		if(document.getElementById('subset4').checked){
+                        //var subset4 =["MITC","ROOM","ROW","POINT","NEXT_LOCATION","GENUS","SPECIES","CLONE_OF","CROSS","STATUS","INSTITUTE","COUNTRY_OF_ORIGIN","ROOTSTOCK","GRAFTING_METHOD","DATE_GRAFTED","GRAFTER", "IMPORT_PERMIT","RUQ","ALIAS_OR_OTHER_ID","COMMENTS","TREE_NUMBER"];
+                }
+
+		for(var i = 0;i<set.length;i++){
+				
+			if((jQuery.inArray(set[i], subset1) != -1)||(jQuery.inArray(set[i], subset2) != -1) || (jQuery.inArray(set[i], subset3) != -1) ||(jQuery.inArray(set[i], subset4) != -1)){	
+				final_set.push({title:set[i]});
+				column_names.push(set[i]); 
+			}
+		}
+
+		$('#example').dataTable( {
+			
+			"aProcessing": true,
+			 "aServerSide": true,
+		"columnDefs": [
+        {"className": "dt-center", "targets": "_all"}
+      		],
+		 fixedHeader: true,
+		columns: final_set,
+		
+
+		"ajax":{
+	   		"url": "server-response3.php",
+	   		"type": "post",
+	   		"data": {
+				column_names : column_names,
+				table:$("#table").val(),
+				column: $("#text1").val(),
+				item : $("#text2").val(),	
+				 },
+		}
+		});
+		});
+
+
+
+        });
+
+function myFunction() {
+    location.reload();
+}
+
+
+    </script>
+
+
+<style>
+  #options{
+    display: none;
+    height: 300px;
+    text-align: center;
+    border: 1px solid red;
+    overflow-y:scroll;
+  }
+  #options>p{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+    </style>
+
+<style>
+  .datalist {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+    height: 100px;
+  }
+  </style>
+
+</head>
+
+<body>
+<p id ="p">
+</p>
+<form autocomplete="off">
+TABLE:
+<select id = "table" >
+<option selected="selected">Please select the table </option>
+<option value = "station_inventory">station_inventory </option>
+<option value = "sample">sample</option>
+<option value = "station_marker">station_marker</option>
+</select>
+</br>
+</br>
+Search in Column
+<input type="text" name="list" list="typeList" id = "text1"  >
+
+<datalist id="typeList">
+<?php
+echo '<option value="please select table"> </option>'; 
+?>
+</datalist>
+For
+<input type="text" name="list2" list="content" id = "text2">
+<datalist id="content">
+<?php
+
+echo '<option value= "please select column"> </option>'; 
+
+?>
+</datalist>
+</br>
+
+</br>
+<input type="checkbox" id ="subset1" name="cb" value="location">Location<br>
+<input type="checkbox" id ="subset2" name="cb" value="SI_Code">SI Code<br>
+<input type="checkbox" id ="subset3" name="cb" value="Graft_Info">Graft Info<br>
+<input type="checkbox" id ="subset4" name="cb" value="Offtype">Offtype<br>
+
+<button type="submit" form="form1" id = "submit" value="Submit">Submit</button>
+<button onclick="myFunction()">Reload page</button>
+
+<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+            </tr>
+        </thead>
+
+</table>
+
+
+</form>
+</body>
+
+</html>
+
+</html>
